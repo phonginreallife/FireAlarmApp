@@ -50,7 +50,7 @@ setInterval(() => {
     }
 }, 100000); // Send data every 1 seconds
 setInterval(() => {
-    const GasDetector = Math.floor(Math.random() * 100); // Simulate temperature between 50 and 100
+    const GasDetector = Math.floor(Math.random() * 100) + 100; // Simulate temperature between 50 and 100
     const sensorData = {
         sensorName: 'GasDetector',
         data: GasDetector
@@ -63,7 +63,7 @@ setInterval(() => {
  100000});
 // Simulate sending data to SQS
 setInterval(() => {
-    const heatDetector = Math.floor(Math.random() * 100); // Simulate temperature between 50 and 100
+    const heatDetector = Math.floor(Math.random() * 100) + 100; // Simulate temperature between 50 and 100
     const sensorData = {
         sensorName: 'heatDetector',
         data: heatDetector

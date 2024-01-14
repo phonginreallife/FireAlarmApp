@@ -44,18 +44,19 @@ function handleMessage(message) {
     //console.log('Received message:', body);
     updateApartmentData(apartmentId,roomData);
 }
-async function updateAlertData(apartmentId) {
+async function updateAlertData(apartmentId,sensorName) {
     const uri = process.env.MONGODB_URI;
-    const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
-    
+    const client = new MongoClient(uri);
+
     try {
         await client.connect();
         const collection = client.db(process.env.DB_NAME).collection(process.env.COLLECTION_ALERT);
+        console.log(`${sensorName}.triggerAt`);
         const updateResult = await collection.updateOne(
-            { apartment: mongoose.Types.ObjectId(apartmentId) },
-            { $set: { triggerAt: new Date() } }
+            { apartment: new ObjectId(apartmentId) },
+            { $set: { [`${sensorName}.triggerAt`]: new Date() } }
         );
-        console.log(`Successfully updated the document: ${updateResult}`);
+        console.log(`Successfully updated the AlertData: ${updateResult}`);
     } catch (err) {
         console.error(`Error: ${err}`);
     } finally {
@@ -64,7 +65,7 @@ async function updateAlertData(apartmentId) {
 }
 async function updateApartmentData(apartmentId, roomData) {
     const uri = process.env.MONGODB_URI;
-    const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+    const client = new MongoClient(uri);
 
     try {
         await client.connect();
@@ -80,15 +81,15 @@ async function updateApartmentData(apartmentId, roomData) {
                 { _id: new ObjectId(apartmentId) },
                 { $set: { [`room.${roomName}.sensors.${sensorName}.status`]: 1 } }
             );
-        console.log(`Successfully updated the document to 1: ${updateResult}`);
-        updateAlertData(apartmentId);
+        console.log(`Successfully updated the ApartmentData to 1: ${updateResult}`);
+        updateAlertData(apartmentId, sensorName);
         }
         else{
             const updateResult = await collection.updateOne(
                 { _id: new ObjectId(apartmentId) },
                 { $set: { [`room.${roomName}.sensors.${sensorName}.status`]: 0 } }
             );
-        console.log(`Successfully updated the document to 0: ${updateResult}`);
+        console.log(`Successfully updated the ApartmentData to 0: ${updateResult}`);
         }
     } catch (err) {
         console.error(`Error: ${err}`);
