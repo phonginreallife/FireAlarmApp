@@ -3,9 +3,7 @@ const getRoomStatus = require('./src/controllers/apartmentController');
 const http = require('http');
 const socketIo = require('socket.io');
 require("dotenv").config();
-// mongodb connection
-const connectDB = require("./src/config/db");
-connectDB();
+
 
 const app = express();
 const server = http.createServer(app);
@@ -42,6 +40,17 @@ io.on('connection', (socket) => {
     });
   });
 });
+
+
+const apiRoutes = require("./src/routes/apiRoutes");
+
+
+
+// mongodb connection
+const connectDB = require("./src/config/db");
+connectDB();
+
+app.use("/api", apiRoutes);
 
 const port = process.env.PORT || 5000;
 server.listen(port, () => console.log(`[${new Date().toISOString()}] Listening on port ${port}`));

@@ -44,7 +44,24 @@ function handleMessage(message) {
     //console.log('Received message:', body);
     updateApartmentData(apartmentId,roomData);
 }
-
+async function updateAlertData(apartmentId) {
+    const uri = process.env.MONGODB_URI;
+    const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+    
+    try {
+        await client.connect();
+        const collection = client.db(process.env.DB_NAME).collection(process.env.COLLECTION_ALERT);
+        const updateResult = await collection.updateOne(
+            { apartment: mongoose.Types.ObjectId(apartmentId) },
+            { $set: { triggerAt: new Date() } }
+        );
+        console.log(`Successfully updated the document: ${updateResult}`);
+    } catch (err) {
+        console.error(`Error: ${err}`);
+    } finally {
+        await client.close();
+    }
+}
 async function updateApartmentData(apartmentId, roomData) {
     const uri = process.env.MONGODB_URI;
     const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
@@ -52,7 +69,7 @@ async function updateApartmentData(apartmentId, roomData) {
     try {
         await client.connect();
 
-        const collection = client.db(process.env.DB_NAME).collection(process.env.COLLECTION_NAME);
+        const collection = client.db(process.env.DB_NAME).collection(process.env.COLLECTION_APARTMENT);
         const roomName = Object.keys(roomData)[0]; 
         const sensorName = Object.keys(roomData[roomName])[0];
         const sensorStatus = roomData[roomName][sensorName];
@@ -64,6 +81,7 @@ async function updateApartmentData(apartmentId, roomData) {
                 { $set: { [`room.${roomName}.sensors.${sensorName}.status`]: 1 } }
             );
         console.log(`Successfully updated the document to 1: ${updateResult}`);
+        updateAlertData(apartmentId);
         }
         else{
             const updateResult = await collection.updateOne(
@@ -78,7 +96,7 @@ async function updateApartmentData(apartmentId, roomData) {
         await client.close();
     }
 }
-pollSQS();
+
 
 function deleteMessageFromQueue(receiptHandle) {
     const params = {
@@ -94,4 +112,5 @@ function deleteMessageFromQueue(receiptHandle) {
         }
     });
 }
+pollSQS();
 
