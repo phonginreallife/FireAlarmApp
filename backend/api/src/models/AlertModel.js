@@ -11,6 +11,7 @@ const detectorSchema = new mongoose.Schema({
         deviceDescription: String,
         deviceData: Number,
         location: String,
+        status: String,
         triggerAt: {
             type: Date,
         },

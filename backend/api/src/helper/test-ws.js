@@ -1,7 +1,7 @@
 const io = require('socket.io-client');
 
 const socket = io('ws://localhost:5000');
-const apartmentId = ['659a5a0db88b9369f584b310'] 
+const apartmentId = ['659a4e55b88b9369f584b308'] 
 
 socket.on('connect', () => {
   console.log('Connected to server');

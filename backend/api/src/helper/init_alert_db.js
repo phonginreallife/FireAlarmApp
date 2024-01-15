@@ -6,7 +6,7 @@ console.log(process.env.MONGODB_URI);
 async function createDataset() {
     // Connect to your MongoDB database
     await mongoose.connect("mongodb+srv://phugia:Z50j1tmo@atlascluster.hhqailb.mongodb.net/?retryWrites=true&w=majority")
-    
+    await Alert.deleteMany()
     // Create new Alert documents
     const alert1 = new Alert({
         apartment: new mongoose.Types.ObjectId('659a4e55b88b9369f584b308'),
@@ -20,6 +20,7 @@ async function createDataset() {
           deviceDescription: 'Smoke detector in the living room',
           deviceData: 0,
           location: 'Living Room',
+          status: 'Alarm',
           triggerAt: new Date(),
           resolveAt: new Date(),
         },
@@ -33,6 +34,7 @@ async function createDataset() {
           deviceDescription: 'Flame detector in the living room',
           deviceData: 0,
           location: 'LivingRoom',
+          status: 'OK',
           triggerAt: new Date(),
           resolveAt: new Date(),
         },
@@ -46,6 +48,7 @@ async function createDataset() {
           deviceDescription: 'Gas detector in the living room',
           deviceData: 0,
           location: 'Living Room',
+          status: 'OK',
           triggerAt: new Date(),
           resolveAt: new Date(),
         },
@@ -60,6 +63,7 @@ async function createDataset() {
           deviceData: 0,
           location: 'Living Room',
           triggerAt: new Date(),
+          status: 'OK',
           resolveAt: new Date(),
         },
 

@@ -1,5 +1,5 @@
 const express = require('express');
-const getRoomStatus = require('./src/controllers/apartmentController');
+const getDeviceStatus = require('./src/controllers/apartmentController');
 const http = require('http');
 const socketIo = require('socket.io');
 require("dotenv").config();
@@ -26,11 +26,11 @@ io.on('connection', (socket) => {
     }
 
     try {
-      const room = await getRoomStatus(data);
-
+      const document = await getDeviceStatus(data);
+      console.log(document);
       // Send the 'room' field back to the client
-      if (room) {
-        socket.emit('message', JSON.stringify(room));
+      if (document) {
+        socket.emit('message', JSON.stringify(document));
       }
     } catch (err) {
       console.error(`[${new Date().toISOString()}] Error handling message: ${err}`);
